@@ -1,10 +1,6 @@
-type ParamsType = {
-    params: {
-        productId: string;
-    }
-}
 
-function Page({ params }: ParamsType) {
+async function Page({params}) {
+  
     return (
         <div>
             <h1>Product {params.productId}</h1>
