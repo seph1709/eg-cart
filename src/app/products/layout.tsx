@@ -9,7 +9,7 @@ function layout({children}: Readonly<{
     <html lang="en">
       <body>
         <Header/>
-        <main className="pt-24">
+        <main className="pt-24 px-10">
             {children}</main>
       </body>
     </html>
