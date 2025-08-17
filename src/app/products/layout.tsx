@@ -6,7 +6,7 @@ function layout({children}: Readonly<{
 }>) {
   metadata.title = "Products";
     return (
-    <html suppressHydrationWarning lang="en">
+    <html lang="en">
       <body>
         <Header/>
         <main className="pt-24">
