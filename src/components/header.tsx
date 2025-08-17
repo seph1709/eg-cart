@@ -1,26 +1,12 @@
 "use client";
-import { LucideKanban, Sun, Moon } from "lucide-react";
+import { LucideKanban} from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
 import { homePath } from "@/path";
-import { useTheme } from "next-themes";
+import ThemeSwitcher from "./theme-switcher";
 
-function ThemeSwitcher() {
-    const { theme, setTheme } = useTheme();
 
-    return (
-        <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Toggle theme"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="mx-2"
-        >
-            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-        </Button>
-    );
-}
 
 function Header() {
     return (

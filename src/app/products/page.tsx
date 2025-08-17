@@ -73,7 +73,7 @@ function Page() {
                 setLimit={setLimit}
                 limitOptions={LIMIT_OPTIONS}
             />
-            <Table className="border">
+            <Table className="border h-[100px]">
                 <TableHeader>
                     <TableRow>
                         <TableHead>Product</TableHead>
@@ -87,7 +87,7 @@ function Page() {
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className="overflow-y-scroll  max-w-full">
                     {limitedProducts.map((product) => (
                         <TableRow key={product.id}>
                             <TableCell>{product.name}</TableCell>
