@@ -17,5 +17,4 @@ export interface TableToolBarProps {
     setSortOrder: Dispatch<SetStateAction<SortOrder>>;
     limit: number;
     setLimit: Dispatch<SetStateAction<number>>;
-    limitOptions: number[];
 }

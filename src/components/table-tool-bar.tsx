@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { SortKey, SortOrder, TableToolBarProps } from "@/app/products/types";
 import { LIMIT_OPTIONS } from "@/app/products/constants";
+import Link from "next/link";
+import { addProductPath } from "@/path";
 
 function TableToolBar({
     search,
@@ -95,8 +97,8 @@ function TableToolBar({
                         </SelectContent>
                     </Select>
                     <Button>
-                        <Plus size={16} className="mr-2" />
-                        Add Product
+                      <Link href={addProductPath} className="flex">  <Plus size={16} className="mr-2" />
+                        Add Product</Link>
                     </Button>
                 </div>
             </div>

@@ -1,9 +1,9 @@
-import { metadata } from "../layout";
+
 
 function layout({children}: Readonly<{
   children: React.ReactNode;
 }>) {
-  metadata.title = "Admin Login";
+
     return (
     <html lang="en">
       <body>

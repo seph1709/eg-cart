@@ -18,8 +18,6 @@ type SortKey = "name" | "price" | "dateAdded";
 type SortOrder = "asc" | "desc";
 type SearchKey = "name" | "price";
 
-const LIMIT_OPTIONS = [5, 10, 20, 50, 100];
-
 
 
 function Page() {
@@ -71,7 +69,7 @@ function Page() {
                 setSortOrder={setSortOrder}
                 limit={limit}
                 setLimit={setLimit}
-                limitOptions={LIMIT_OPTIONS}
+               
             />
             <Table className="border h-[100px]">
                 <TableHeader>

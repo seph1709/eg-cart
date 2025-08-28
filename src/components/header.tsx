@@ -10,7 +10,7 @@ import ThemeSwitcher from "./theme-switcher";
 
 function Header() {
     return (
-        <nav className="fixed w-full z-20 bg-background/95">
+        <nav  className="fixed w-full z-20 bg-background/95">
             <div className="flex justify-between px-5 py-2.5 items-center">
                 <Button className="flex gap-x-2 font-semibold" variant="ghost">
                     <LucideKanban />
