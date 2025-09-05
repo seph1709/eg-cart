@@ -439,7 +439,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                     </div>
                     <div>
                       <Label htmlFor="x" className="text-sm">
-                        Aisle (X)
+                        Coordinate X
                       </Label>
                       <Input
                         id="x"
@@ -452,7 +452,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                     </div>
                     <div>
                       <Label htmlFor="y" className="text-sm">
-                        Shelf (Y)
+                        Coordinate Y
                       </Label>
                       <Input
                         id="y"

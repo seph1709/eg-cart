@@ -303,7 +303,7 @@ function Page() {
                         id="quantity"
                         name="quantity"
                         type="number"
-                        value={form.quantity}
+                        value={form.quantity == 0 ? "" : form.quantity}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
@@ -316,7 +316,7 @@ function Page() {
                         id="price"
                         name="price"
                         type="number"
-                        value={form.price}
+                        value={form.price == 0 ? "" : form.price}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
@@ -329,7 +329,7 @@ function Page() {
                         id="discount"
                         name="discount"
                         type="number"
-                        value={form.discount}
+                        value={form.discount == 0 ? "" : form.discount}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
@@ -342,7 +342,9 @@ function Page() {
                         id="minStockLevel"
                         name="minStockLevel"
                         type="number"
-                        value={form.minStockLevel}
+                        value={
+                          form.minStockLevel == 0 ? "" : form.minStockLevel
+                        }
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
@@ -355,7 +357,9 @@ function Page() {
                         id="maxStockLevel"
                         name="maxStockLevel"
                         type="number"
-                        value={form.maxStockLevel}
+                        value={
+                          form.maxStockLevel == 0 ? "" : form.maxStockLevel
+                        }
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
@@ -450,26 +454,30 @@ function Page() {
                     </div>
                     <div>
                       <Label htmlFor="x" className="text-sm">
-                        Aisle (X)
+                        Coordinate X
                       </Label>
                       <Input
                         id="x"
                         name="x"
                         type="number"
-                        value={form.coordinates.x}
+                        value={
+                          form.coordinates.x == 0 ? "" : form.coordinates.x
+                        }
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
                     </div>
                     <div>
                       <Label htmlFor="y" className="text-sm">
-                        Shelf (Y)
+                        Coordinate Y
                       </Label>
                       <Input
                         id="y"
                         name="y"
                         type="number"
-                        value={form.coordinates.y}
+                        value={
+                          form.coordinates.y == 0 ? "" : form.coordinates.y
+                        }
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />

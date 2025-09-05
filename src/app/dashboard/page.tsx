@@ -149,7 +149,7 @@ function Page() {
               <TableHead>Price</TableHead>
               <TableHead>Available</TableHead>
               <TableHead>Supplier</TableHead>
-              <TableHead>Coordinates</TableHead>
+              <TableHead>Coordinates ( x , y )</TableHead>
               <TableHead>Date Added</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -165,8 +165,8 @@ function Page() {
                   <TableCell>{product.available.toString()}</TableCell>
                   <TableCell>{product.supplier}</TableCell>
                   <TableCell className="flex justify-around items-center self-center h-full">
-                    <div>x: {product.coordinates.x}</div>
-                    <div>y: {product.coordinates.y}</div>
+                    <div>{product.coordinates.x}</div>
+                    <div>{product.coordinates.y}</div>
                   </TableCell>
                   <TableCell>{product.dateAdded}</TableCell>
                   <TableCell>
