@@ -1,5 +1,5 @@
+import { metadata } from "@/app/layout";
 import Header from "@/components/header";
-import { metadata } from "../layout";
 
 function layout({
   children,

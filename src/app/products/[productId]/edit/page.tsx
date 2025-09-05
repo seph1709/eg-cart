@@ -34,11 +34,9 @@ import { Toaster } from "react-hot-toast";
 
 function EditPage({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = use(params);
+  const router = useRouter();
   console.log("Editing product with ID:", productId);
-  // async function product() {
-  //   // products = await getProducts();
-  //   // return (products ?? []).find((p) => p.id === productId) as Product;
-  // }
+
   useEffect(() => {
     async function fetchProduct() {
       const products = await getProducts();
@@ -49,7 +47,6 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
     fetchProduct();
   }, [productId]);
   const [form, setForm] = useState<Product>({} as Product);
-  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<

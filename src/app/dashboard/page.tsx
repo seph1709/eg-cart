@@ -140,7 +140,7 @@ function Page() {
           limit={limit}
           setLimit={setLimit}
         />
-        <Table className="border h-[100px] motion-preset-slide-down ">
+        <Table className="border h-[100px]   motion-preset-slide-down ">
           <TableHeader>
             <TableRow>
               <TableHead>Product</TableHead>
