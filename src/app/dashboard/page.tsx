@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { deleteProduct, getProducts } from "@/api/apiProduct";
 import { Product } from "./types";
 import toast, { Toaster } from "react-hot-toast";
+import LoadingIndicator from "@/components/Loading";
 
 type SortKey = "name" | "price" | "dateAdded";
 type SortOrder = "asc" | "desc";
@@ -41,10 +42,12 @@ function Page() {
   const [limit, setLimit] = useState<number>(10);
   const [seletedItem, setSelectedItem] = useState<number | null>();
   const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   async function fetchProduct() {
     const products = await getProducts();
+    setIsLoading(false);
     setProducts(products);
   }
 
@@ -52,13 +55,11 @@ function Page() {
     fetchProduct();
   }, []);
 
-  // Filter products by selected search key
   const filteredProducts = products
     .filter((product: Product) => {
       if (searchKey === "name") {
         return product.name.toLowerCase().includes(search.toLowerCase());
       } else if (searchKey === "price") {
-        // Allow searching price as string or number
         return product.price.toString().includes(search);
       }
       return true;
@@ -155,7 +156,9 @@ function Page() {
             </TableRow>
           </TableHeader>
           <TableBody className="overflow-y-scroll  max-w-full">
-            {products.length !== 0 ? (
+            {isLoading ? (
+              <LoadingIndicator />
+            ) : products.length !== 0 ? (
               limitedProducts.map((product, index) => (
                 <TableRow key={product.id}>
                   <TableCell>{product.name}</TableCell>
@@ -196,10 +199,12 @@ function Page() {
             )}
           </TableBody>
         </Table>
-        {products.length === 0 && (
+        {products.length === 0 && isLoading === false ? (
           <div className="h-full w-full flex justify-center items-center text-md mt-10">
             <Frown /> <span className="ml-2">No products found</span>
           </div>
+        ) : (
+          <></>
         )}
       </Dialog>
     </>
