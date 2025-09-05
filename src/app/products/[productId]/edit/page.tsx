@@ -1,6 +1,5 @@
 "use client";
-
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -23,21 +22,34 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { Product } from "@/app/dashboard/types";
+import { use } from "react";
+import { classificationOptions } from "./constants";
+import { categoryOptions, unitOptions } from "@/app/dashboard/constants";
 import { useRouter } from "next/navigation";
 import { dashboardPath } from "@/path";
-import { insertProducts } from "@/api/apiProduct";
-import { Product } from "@/app/dashboard/types";
-import toast, { Toaster } from "react-hot-toast";
-import {
-  categoryOptions,
-  classificationOptions,
-  emptyProduct,
-  unitOptions,
-} from "./constants";
+import { getProducts, updateProduct } from "@/api/apiProduct";
+import LoadingIndicator from "@/components/Loading";
+import { Toaster } from "react-hot-toast";
 
-function Page() {
+function EditPage({ params }: { params: Promise<{ productId: string }> }) {
+  const { productId } = use(params);
+  console.log("Editing product with ID:", productId);
+  // async function product() {
+  //   // products = await getProducts();
+  //   // return (products ?? []).find((p) => p.id === productId) as Product;
+  // }
+  useEffect(() => {
+    async function fetchProduct() {
+      const products = await getProducts();
+      const foundProduct = (products ?? []).find((p) => p.id === productId);
+      setForm(foundProduct);
+    }
+
+    fetchProduct();
+  }, [productId]);
+  const [form, setForm] = useState<Product>({} as Product);
   const router = useRouter();
-  const [form, setForm] = useState<Product>(emptyProduct);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -79,36 +91,30 @@ function Page() {
     setForm({ ...form, available: checked });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // alert("Product added!");
-
-    console.log(form);
-
-    if (form == emptyProduct) {
-      toast.error("Please fill out the form before submitting.");
-      return;
-    }
-    insertProducts(form).then(({ data, error }) => {
-      console.log({ data, error });
-
-      if (error) {
-        toast.error("Error adding product: " + error.message);
-      } else {
-        toast.success("Product added successfully!");
-        router.push(dashboardPath);
-      }
-    });
-  };
-
   const handleCancel = () => {
     router.push(dashboardPath);
   };
 
+  const handleProductUpdate = async (e: FormEvent) => {
+    e.preventDefault();
+    const { data, error } = await updateProduct(productId, form);
+    if (error) {
+      throw new Error(error.message);
+    } else {
+      console.log("updated data: ", data);
+
+      router.push(dashboardPath);
+    }
+  };
+
+  if (Object.keys(form).length === 0) {
+    return <LoadingIndicator />;
+  }
+
   return (
     <>
       <Toaster position="top-right" reverseOrder={true} />
-      <div className="flex justify-center items-center  motion-preset-fade   ">
+      <div className="flex justify-center items-center  motion-preset-fade ">
         <style jsx global>{`
           /* Chrome, Safari, Edge, Opera */
           input[type="number"]::-webkit-outer-spin-button,
@@ -122,9 +128,9 @@ function Page() {
             -moz-appearance: textfield;
           }
         `}</style>
-        <Card className="w-full max-w-7xl ">
+        <Card className="w-full max-w-7xl">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-xl">Add New Product</CardTitle>
+            <CardTitle className="text-xl">Edit Product Details</CardTitle>
             <div className="flex gap-2">
               <Button
                 type="button"
@@ -139,7 +145,7 @@ function Page() {
                 className="h-9 cursor-pointer"
                 form="product-form"
               >
-                Add Product
+                Save Changes
               </Button>
             </div>
           </CardHeader>
@@ -147,7 +153,7 @@ function Page() {
             <form
               id="product-form"
               className="space-y-4"
-              onSubmit={handleSubmit}
+              onSubmit={handleProductUpdate}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="lg:col-span-2">
@@ -375,15 +381,7 @@ function Page() {
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {form.expirationDate ? (
-                              format(
-                                new Date(
-                                  parseInt(form.expirationDate.split("-")[0]),
-                                  parseInt(form.expirationDate.split("-")[1]) -
-                                    1,
-                                  parseInt(form.expirationDate.split("-")[2])
-                                ),
-                                "PPP"
-                              )
+                              format(new Date(form.expirationDate), "PPP")
                             ) : (
                               <span>Pick a date</span>
                             )}
@@ -394,13 +392,7 @@ function Page() {
                             mode="single"
                             selected={
                               form.expirationDate
-                                ? new Date(
-                                    parseInt(form.expirationDate.split("-")[0]),
-                                    parseInt(
-                                      form.expirationDate.split("-")[1]
-                                    ) - 1,
-                                    parseInt(form.expirationDate.split("-")[2])
-                                  )
+                                ? new Date(form.expirationDate)
                                 : undefined
                             }
                             onSelect={(date) =>
@@ -522,4 +514,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default EditPage;

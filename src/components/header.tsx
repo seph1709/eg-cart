@@ -1,33 +1,48 @@
 "use client";
-import { LucideKanban} from "lucide-react";
+import { LucideKanban } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
-import { homePath } from "@/path";
-import ThemeSwitcher from "./theme-switcher";
-
-
+import { adminLoginPath, dashboardPath } from "@/path";
+import { supabase } from "@/api/supabase";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function Header() {
-    return (
-        <nav  className="fixed w-full z-20 bg-background/95">
-            <div className="flex justify-between px-5 py-2.5 items-center">
-                <Button className="flex gap-x-2 font-semibold" variant="ghost">
-                    <LucideKanban />
-                    <Link href={homePath}>
-                        <h1 className="text-lg font-semibold">E-G Cart</h1>
-                    </Link>
-                </Button>
-                <div className="flex items-center gap-x-2">
-                    <ThemeSwitcher />
-                    <Button variant="outline">
-                        <h1>Logout</h1>
-                    </Button>
-                </div>
-            </div>
-            <Separator />
-        </nav>
-    );
+  const router = useRouter();
+  return (
+    <nav className="fixed w-full z-20 bg-background/95">
+      <div className="flex justify-between px-5 py-2.5 items-center">
+        <Button className="flex gap-x-2 font-semibold" variant="ghost">
+          <LucideKanban />
+          <Link href={dashboardPath}>
+            <h1 className="text-lg font-semibold">E-G Cart</h1>
+          </Link>
+        </Button>
+        <div className="flex items-center gap-x-2">
+          <Button
+            variant="outline"
+            role="button"
+            className="cursor-pointer"
+            onClick={async () => {
+              const { error } = await supabase.auth.signOut();
+
+              if (error) {
+                toast.error(error.message);
+                throw new Error("Logout failed: " + error.message);
+              } else {
+                toast.success("Successfully Logout!");
+                router.push(adminLoginPath);
+              }
+            }}
+          >
+            <h1>Logout</h1>
+          </Button>
+        </div>
+      </div>
+      <Separator />
+    </nav>
+  );
 }
 
 export default Header;
