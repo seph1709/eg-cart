@@ -34,6 +34,106 @@ import {
   emptyProduct,
   unitOptions,
 } from "./constants";
+import { EnhancedDatePickerProps } from "../[productId]/edit/types";
+import { monthOptions, yearOptions } from "../[productId]/edit/constants";
+
+function EnhancedDatePicker({
+  date,
+  onDateChange,
+  placeholder = "Pick a date",
+  disabled = false,
+}: EnhancedDatePickerProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(date || new Date());
+  const [selectedYear, setSelectedYear] = useState(
+    date?.getFullYear() || new Date().getFullYear()
+  );
+  const [selectedMonth, setSelectedMonth] = useState(
+    date?.getMonth() || new Date().getMonth()
+  );
+
+  const handleYearChange = (year: string) => {
+    const newYear = parseInt(year);
+    setSelectedYear(newYear);
+    const newDate = new Date(newYear, selectedMonth, 1);
+    setCurrentMonth(newDate);
+  };
+
+  const handleMonthChange = (monthIndex: string) => {
+    const newMonth = parseInt(monthIndex);
+    setSelectedMonth(newMonth);
+    const newDate = new Date(selectedYear, newMonth, 1);
+    setCurrentMonth(newDate);
+  };
+
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    onDateChange(selectedDate);
+    setIsOpen(false);
+  };
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          disabled={disabled}
+          className={cn(
+            "w-full justify-start text-left font-normal mt-1 h-9 text-xs",
+            !date && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? format(date, "PPP") : <span>{placeholder}</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <div className="p-3 border-b">
+          <div className="flex gap-2 mb-2">
+            <Select
+              value={selectedMonth.toString()}
+              onValueChange={handleMonthChange}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {monthOptions.map((month, index) => (
+                  <SelectItem key={index} value={index.toString()}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={selectedYear.toString()}
+              onValueChange={handleYearChange}
+            >
+              <SelectTrigger className="h-8 text-xs w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-48">
+                {yearOptions.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={handleDateSelect}
+          month={currentMonth}
+          onMonthChange={setCurrentMonth}
+          initialFocus
+          className="rounded-md"
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function Page() {
   const router = useRouter();
@@ -368,89 +468,31 @@ function Page() {
                       <Label htmlFor="expirationDate" className="text-sm">
                         Expiration Date
                       </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal mt-1 h-9 text-xs",
-                              !form.expirationDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {form.expirationDate ? (
-                              format(
-                                new Date(
-                                  parseInt(form.expirationDate.split("-")[0]),
-                                  parseInt(form.expirationDate.split("-")[1]) -
-                                    1,
-                                  parseInt(form.expirationDate.split("-")[2])
-                                ),
-                                "PPP"
-                              )
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={
-                              form.expirationDate
-                                ? new Date(
-                                    parseInt(form.expirationDate.split("-")[0]),
-                                    parseInt(
-                                      form.expirationDate.split("-")[1]
-                                    ) - 1,
-                                    parseInt(form.expirationDate.split("-")[2])
-                                  )
-                                : undefined
-                            }
-                            onSelect={(date) =>
-                              handleDateChange("expirationDate", date)
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <EnhancedDatePicker
+                        date={
+                          form.expirationDate
+                            ? new Date(form.expirationDate)
+                            : undefined
+                        }
+                        onDateChange={(date) =>
+                          handleDateChange("expirationDate", date)
+                        }
+                        placeholder="Pick expiration date"
+                      />
                     </div>
                     <div>
                       <Label htmlFor="dateAdded" className="text-sm">
                         Date Added
                       </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal mt-1 h-9 text-xs",
-                              !form.dateAdded && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {form.dateAdded ? (
-                              format(new Date(form.dateAdded), "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={
-                              form.dateAdded
-                                ? new Date(form.dateAdded)
-                                : undefined
-                            }
-                            onSelect={(date) =>
-                              handleDateChange("dateAdded", date)
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <EnhancedDatePicker
+                        date={
+                          form.dateAdded ? new Date(form.dateAdded) : undefined
+                        }
+                        onDateChange={(date) =>
+                          handleDateChange("dateAdded", date)
+                        }
+                        placeholder="Pick date added"
+                      />
                     </div>
                     <div>
                       <Label htmlFor="x" className="text-sm">

@@ -24,13 +24,112 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Product } from "@/app/dashboard/types";
 import { use } from "react";
-import { classificationOptions } from "./constants";
+import { classificationOptions, monthOptions, yearOptions } from "./constants";
 import { categoryOptions, unitOptions } from "@/app/dashboard/constants";
 import { useRouter } from "next/navigation";
 import { dashboardPath } from "@/path";
 import { getProducts, updateProduct } from "@/api/apiProduct";
 import LoadingIndicator from "@/components/Loading";
 import { Toaster } from "react-hot-toast";
+import { EnhancedDatePickerProps } from "./types";
+
+function EnhancedDatePicker({
+  date,
+  onDateChange,
+  placeholder = "Pick a date",
+  disabled = false,
+}: EnhancedDatePickerProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(date || new Date());
+  const [selectedYear, setSelectedYear] = useState(
+    date?.getFullYear() || new Date().getFullYear()
+  );
+  const [selectedMonth, setSelectedMonth] = useState(
+    date?.getMonth() || new Date().getMonth()
+  );
+
+  const handleYearChange = (year: string) => {
+    const newYear = parseInt(year);
+    setSelectedYear(newYear);
+    const newDate = new Date(newYear, selectedMonth, 1);
+    setCurrentMonth(newDate);
+  };
+
+  const handleMonthChange = (monthIndex: string) => {
+    const newMonth = parseInt(monthIndex);
+    setSelectedMonth(newMonth);
+    const newDate = new Date(selectedYear, newMonth, 1);
+    setCurrentMonth(newDate);
+  };
+
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    onDateChange(selectedDate);
+    setIsOpen(false);
+  };
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          disabled={disabled}
+          className={cn(
+            "w-full justify-start text-left font-normal mt-1 h-9 text-xs",
+            !date && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? format(date, "PPP") : <span>{placeholder}</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <div className="p-3 border-b">
+          <div className="flex gap-2 mb-2">
+            <Select
+              value={selectedMonth.toString()}
+              onValueChange={handleMonthChange}
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {monthOptions.map((month, index) => (
+                  <SelectItem key={index} value={index.toString()}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select
+              value={selectedYear.toString()}
+              onValueChange={handleYearChange}
+            >
+              <SelectTrigger className="h-8 text-xs w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="max-h-48">
+                {yearOptions.map((year) => (
+                  <SelectItem key={year} value={year.toString()}>
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={handleDateSelect}
+          month={currentMonth}
+          onMonthChange={setCurrentMonth}
+          initialFocus
+          className="rounded-md"
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function EditPage({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = use(params);
@@ -46,6 +145,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
 
     fetchProduct();
   }, [productId]);
+
   const [form, setForm] = useState<Product>({} as Product);
 
   const handleChange = (
@@ -99,7 +199,6 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
       throw new Error(error.message);
     } else {
       console.log("updated data: ", data);
-
       router.push(dashboardPath);
     }
   };
@@ -111,7 +210,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
   return (
     <>
       <Toaster position="top-right" reverseOrder={true} />
-      <div className="flex justify-center items-center  motion-preset-fade ">
+      <div className="flex justify-center items-center motion-preset-fade">
         <style jsx global>{`
           /* Chrome, Safari, Edge, Opera */
           input[type="number"]::-webkit-outer-spin-button,
@@ -367,75 +466,31 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                       <Label htmlFor="expirationDate" className="text-sm">
                         Expiration Date
                       </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal mt-1 h-9 text-xs",
-                              !form.expirationDate && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {form.expirationDate ? (
-                              format(new Date(form.expirationDate), "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={
-                              form.expirationDate
-                                ? new Date(form.expirationDate)
-                                : undefined
-                            }
-                            onSelect={(date) =>
-                              handleDateChange("expirationDate", date)
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <EnhancedDatePicker
+                        date={
+                          form.expirationDate
+                            ? new Date(form.expirationDate)
+                            : undefined
+                        }
+                        onDateChange={(date) =>
+                          handleDateChange("expirationDate", date)
+                        }
+                        placeholder="Pick expiration date"
+                      />
                     </div>
                     <div>
                       <Label htmlFor="dateAdded" className="text-sm">
                         Date Added
                       </Label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full justify-start text-left font-normal mt-1 h-9 text-xs",
-                              !form.dateAdded && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {form.dateAdded ? (
-                              format(new Date(form.dateAdded), "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={
-                              form.dateAdded
-                                ? new Date(form.dateAdded)
-                                : undefined
-                            }
-                            onSelect={(date) =>
-                              handleDateChange("dateAdded", date)
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <EnhancedDatePicker
+                        date={
+                          form.dateAdded ? new Date(form.dateAdded) : undefined
+                        }
+                        onDateChange={(date) =>
+                          handleDateChange("dateAdded", date)
+                        }
+                        placeholder="Pick date added"
+                      />
                     </div>
                     <div>
                       <Label htmlFor="x" className="text-sm">
@@ -445,7 +500,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                         id="x"
                         name="x"
                         type="number"
-                        value={form.coordinates.x}
+                        value={form.coordinates?.x || ""}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
@@ -458,7 +513,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                         id="y"
                         name="y"
                         type="number"
-                        value={form.coordinates.y}
+                        value={form.coordinates?.y || ""}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />

@@ -43,3 +43,22 @@ export const unitOptions = [
   "L",
   "g",
 ];
+
+// Generate year options (from 1900 to 2100)
+export const yearOptions = Array.from({ length: 201 }, (_, i) => 1900 + i);
+
+// Generate month options
+export const monthOptions = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
