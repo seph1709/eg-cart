@@ -41,10 +41,6 @@ export const productsTable = pgTable("products", {
   minStockLevel: integer("minStockLevel"),
   // Maximum stock level for inventory management.
   maxStockLevel: integer("maxStockLevel"),
-  // The cost price of the product.
-  costPrice: integer("costPrice"),
-  // The profit margin percentage.
-  profitMargin: integer("profitMargin"),
 });
 
 export type InserProducts = typeof productsTable.$inferInsert;

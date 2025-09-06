@@ -21,8 +21,6 @@ export const emptyProduct = {
   unit: "",
   minStockLevel: 0,
   maxStockLevel: 0,
-  costPrice: 0,
-  profitMargin: 0,
 } as Product;
 
 // Options

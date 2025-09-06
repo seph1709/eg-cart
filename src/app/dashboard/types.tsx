@@ -55,8 +55,6 @@ export interface Product {
   unit: string; // Unit of measurement (e.g., piece, kg, pack)
   minStockLevel: number; // Minimum stock level before reordering
   maxStockLevel: number; // Maximum stock level for inventory control
-  costPrice: number; // Cost price for inventory valuation
-  profitMargin: number; // Profit margin percentage
   description?: string; // Optional description
   dateAdded: string; // Date when product was added to inventory (ISO format)
   discount: number; // Discount percentage (0-100)
