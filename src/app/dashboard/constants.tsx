@@ -8,22 +8,11 @@ export const classificationOptions = [
 ];
 
 export const categoryOptions = [
-  "Grains & Rice",
-  "Instant Noodles",
-  "Condiments & Sauces",
-  "Beverages",
-  "Fresh Fruits",
-  "Frozen Meat",
-  "Canned Goods",
-  "Snacks",
-  "Household Essentials",
-  "Cooking Ingredients",
-  "Personal Care",
-  "Baby Care",
+  "Fruits & Vegetables",
+  "Dairy and Eggs",
+  "Meat & Fish",
   "Bakery",
-  "Dairy & Eggs",
-  "Fresh Meat",
-  "Fresh Vegetables",
+  "Beverages",
 ];
 
 export const unitOptions = [

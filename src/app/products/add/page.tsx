@@ -32,7 +32,6 @@ import {
   categoryOptions,
   classificationOptions,
   emptyProduct,
-  unitOptions,
 } from "./constants";
 import { EnhancedDatePickerProps } from "../[productId]/edit/types";
 import { monthOptions, yearOptions } from "../[productId]/edit/constants";
@@ -150,7 +149,8 @@ function Page() {
       name === "price" ||
       name === "discount" ||
       name === "minStockLevel" ||
-      name === "maxStockLevel"
+      name === "maxStockLevel" ||
+      name === "currentStockLevel"
     ) {
       setForm({ ...form, [name]: Number(value) });
     } else if (name === "x" || name === "y") {
@@ -181,7 +181,6 @@ function Page() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // alert("Product added!");
 
     console.log(form);
 
@@ -208,7 +207,7 @@ function Page() {
   return (
     <>
       <Toaster position="top-right" reverseOrder={true} />
-      <div className="flex justify-center items-center  motion-preset-fade   ">
+      <div className="flex justify-center items-center motion-preset-fade">
         <style jsx global>{`
           /* Chrome, Safari, Edge, Opera */
           input[type="number"]::-webkit-outer-spin-button,
@@ -222,7 +221,7 @@ function Page() {
             -moz-appearance: textfield;
           }
         `}</style>
-        <Card className="w-full max-w-7xl ">
+        <Card className="w-full max-w-7xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-xl">Add New Product</CardTitle>
             <div className="flex gap-2">
@@ -373,29 +372,6 @@ function Page() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="unit" className="text-sm">
-                        Unit
-                      </Label>
-                      <Select
-                        name="unit"
-                        onValueChange={(value) =>
-                          handleSelectChange("unit", value)
-                        }
-                        value={form.unit}
-                      >
-                        <SelectTrigger className="mt-1 h-9 text-xs">
-                          <SelectValue placeholder="Select Unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {unitOptions.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
                       <Label htmlFor="quantity" className="text-sm">
                         Quantity
                       </Label>
@@ -459,6 +435,23 @@ function Page() {
                         type="number"
                         value={
                           form.maxStockLevel == 0 ? "" : form.maxStockLevel
+                        }
+                        onChange={handleChange}
+                        className="mt-1 h-9 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="currentStockLevel" className="text-sm">
+                        Current Stock Level
+                      </Label>
+                      <Input
+                        id="currentStockLevel"
+                        name="currentStockLevel"
+                        type="number"
+                        value={
+                          form.currentStockLevel == 0
+                            ? ""
+                            : form.currentStockLevel
                         }
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"

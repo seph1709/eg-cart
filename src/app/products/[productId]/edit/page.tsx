@@ -140,6 +140,9 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
     async function fetchProduct() {
       const products = await getProducts();
       const foundProduct = (products ?? []).find((p) => p.id === productId);
+      console.log(foundProduct);
+      console.log(foundProduct.classification);
+
       setForm(foundProduct);
     }
 
@@ -159,7 +162,8 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
       name === "price" ||
       name === "discount" ||
       name === "minStockLevel" ||
-      name === "maxStockLevel"
+      name === "maxStockLevel" ||
+      name === "currentStockLevel"
     ) {
       setForm({ ...form, [name]: Number(value) });
     } else if (name === "x" || name === "y") {
@@ -375,29 +379,6 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="unit" className="text-sm">
-                        Unit
-                      </Label>
-                      <Select
-                        name="unit"
-                        onValueChange={(value) =>
-                          handleSelectChange("unit", value)
-                        }
-                        value={form.unit}
-                      >
-                        <SelectTrigger className="mt-1 h-9 text-xs">
-                          <SelectValue placeholder="Select Unit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {unitOptions.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
                       <Label htmlFor="quantity" className="text-sm">
                         Quantity
                       </Label>
@@ -458,6 +439,19 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                         name="maxStockLevel"
                         type="number"
                         value={form.maxStockLevel}
+                        onChange={handleChange}
+                        className="mt-1 h-9 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="currentStockLevel" className="text-sm">
+                        Current Stock Level
+                      </Label>
+                      <Input
+                        id="currentStockLevel"
+                        name="currentStockLevel"
+                        type="number"
+                        value={form.currentStockLevel}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />

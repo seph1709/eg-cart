@@ -1,27 +1,55 @@
 // Options
 export const classificationOptions = [
-  "Convenience Good",
-  "Shopping Good",
-  "Specialty Good",
+  // Fruits & Vegetables
+  "Fresh Fruit",
+  "Leafy Vegetable",
+  "Fresh Vegetable",
+  "Root Vegetable",
+  "Citrus Fruit",
+  "Squash Vegetable",
+  "Fruit Vegetable",
+  "Legume Vegetable",
+  "Tropical Fruit",
+
+  // Dairy and Eggs
+  "Dairy Product",
+  "Poultry Product",
+  "Fermented Dairy",
+  "Soft Cheese",
+  "Preserved Egg",
+
+  // Meat & Fish
+  "Poultry Meat",
+  "Pork Meat",
+  "Fresh Fish",
+  "Beef Meat",
+  "Seafood",
+  "Processed Meat",
+
+  // Bakery
+  "Bread",
+  "Pastry",
+  "Cake",
+  "Muffin",
+  "Rice Cake",
+
+  // Beverages
+  "Fruit Juice",
+  "Natural Beverage",
+  "Coffee Beverage",
+  "Traditional Beverage",
+  "Milk Beverage",
+  "Tea Beverage",
+  "Beverage Concentrate",
+  "Citrus Juice",
 ];
 
 export const categoryOptions = [
-  "Grains & Rice",
-  "Instant Noodles",
-  "Condiments & Sauces",
-  "Beverages",
-  "Fresh Fruits",
-  "Frozen Meat",
-  "Canned Goods",
-  "Snacks",
-  "Household Essentials",
-  "Cooking Ingredients",
-  "Personal Care",
-  "Baby Care",
+  "Fruits & Vegetables",
+  "Dairy and Eggs",
+  "Meat & Fish",
   "Bakery",
-  "Dairy & Eggs",
-  "Fresh Meat",
-  "Fresh Vegetables",
+  "Beverages",
 ];
 
 export const unitOptions = [

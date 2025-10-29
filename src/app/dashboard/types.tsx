@@ -42,22 +42,27 @@ interface Coordinates {
 export interface Product {
   id: string;
   name: string;
-  classification: ProductClassification;
-  quantity: number; // Current stock quantity
-  available: boolean; // Is the product currently available for purchase?
-  supplier: string; // The supplier of the product
-  coordinates: Coordinates; // Location of the product in the store (e.g., aisle/shelf)
+  classification: string;
+  quantity: number;
+  available: boolean;
+  supplier: string;
+  coordinates: { x: number; y: number };
   price: number;
-  weight: string; // Optional weight or size information
-  brand: string; // Brand of the product
-  category: string; // Category or department (e.g., Beverages, Snacks)
-  barcode: string; // Unique product identifier
-  unit: string; // Unit of measurement (e.g., piece, kg, pack)
-  minStockLevel: number; // Minimum stock level before reordering
-  maxStockLevel: number; // Maximum stock level for inventory control
-  description?: string; // Optional description
-  dateAdded: string; // Date when product was added to inventory (ISO format)
-  discount: number; // Discount percentage (0-100)
-  image: string; // URL or path to product image
-  expirationDate: string | null; // Expiration date (ISO format), null for non-perishable items
+  description: string;
+  dateAdded: string;
+  discount: number;
+  image: string;
+  expirationDate: string;
+  weight: string;
+  brand: string;
+  category:
+    | "Fruits & Vegetables"
+    | "Dairy and Eggs"
+    | "Meat & Fish"
+    | "Bakery"
+    | "Beverages";
+  barcode: string;
+  minStockLevel: number;
+  maxStockLevel: number;
+  currentStockLevel: number;
 }
