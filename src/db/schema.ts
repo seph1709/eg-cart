@@ -16,6 +16,13 @@ export const productCategoryEnum = pgEnum("product_category", [
   "Beverages",
 ]);
 
+export const deliveryStatusEnum = pgEnum("status_category", [
+  "Order placed",
+  "Unfulfilled",
+  "In transit",
+  "Completed",
+]);
+
 export const productsTable = pgTable("products", {
   // A unique identifier for the product, often a custom string.
   id: text("id").primaryKey(),
@@ -80,9 +87,25 @@ export const productsTable = pgTable("products", {
   rackLevel: integer("rackLevel").notNull().default(0),
 });
 
+export const scheduledTasksTable = pgTable("scheduled_tasks", {
+  id: text("id").primaryKey(),
+  supplierName: text("supplierName").notNull(),
+  arriveDate: text("arriveDate").notNull(),
+  dateStarted: text("dateStarted").notNull(),
+  productId: text("productId").notNull(),
+  quantity: integer("quantity").notNull(),
+  status: deliveryStatusEnum("status"),
+  notes: text("notes").notNull(),
+  totalCost: integer("totalCost").notNull(),
+  isPaid: boolean("isPaid").notNull().default(false),
+});
+
 // 5. Fixed the typo: 'InserProducts' -> 'InsertProducts'
 export type InsertProducts = typeof productsTable.$inferInsert;
 export type SelectProducts = typeof productsTable.$inferSelect;
+
+export type InsertScheduledTasks = typeof scheduledTasksTable.$inferInsert;
+export type SelectScheduledTasks = typeof scheduledTasksTable.$inferSelect;
 
 // export const usersTable = pgTable("users_table", {
 //   id: serial("id").primaryKey(),

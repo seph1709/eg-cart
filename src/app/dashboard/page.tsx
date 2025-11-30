@@ -79,6 +79,10 @@ function Page() {
 
   const limitedProducts = filteredProducts.slice(0, limit);
 
+  if (isLoading) {
+    return <LoadingIndicator />;
+  }
+
   return (
     <>
       <Toaster position="top-right" reverseOrder={true} />
@@ -156,47 +160,41 @@ function Page() {
             </TableRow>
           </TableHeader>
           <TableBody className="overflow-y-scroll  max-w-full">
-            {isLoading ? (
-              <LoadingIndicator />
-            ) : products.length !== 0 ? (
-              limitedProducts.map((product, index) => (
-                <TableRow key={product.id}>
-                  <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.classification}</TableCell>
-                  <TableCell>{product.currentStockLevel}</TableCell>
-                  <TableCell>₱ {product.price}</TableCell>
-                  <TableCell>{product.available.toString()}</TableCell>
-                  <TableCell>{product.supplier}</TableCell>
-                  <TableCell className="flex justify-around items-center self-center h-full">
-                    <div>{product.coordinates.x}</div>
-                    <div>{product.coordinates.y}</div>
-                  </TableCell>
-                  <TableCell>{product.dateAdded}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-x-5">
-                      <Pencil
-                        size={16}
-                        role="button"
-                        className="cursor-pointer"
-                        onClick={async () => {
-                          router.push(editProductPath(product.id));
-                        }}
-                      />
-                      <DialogTrigger
-                        asChild
-                        role="button"
-                        className="cursor-pointer hover:text-red-600"
-                        onClick={() => setSelectedItem(index)}
-                      >
-                        <Trash size={16} />
-                      </DialogTrigger>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <></>
-            )}
+            {limitedProducts.map((product, index) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.classification}</TableCell>
+                <TableCell>{product.currentStockLevel}</TableCell>
+                <TableCell>₱ {product.price}</TableCell>
+                <TableCell>{product.available.toString()}</TableCell>
+                <TableCell>{product.supplier}</TableCell>
+                <TableCell className="flex justify-around items-center self-center h-full">
+                  <div>{product.coordinates.x}</div>
+                  <div>{product.coordinates.y}</div>
+                </TableCell>
+                <TableCell>{product.dateAdded}</TableCell>
+                <TableCell>
+                  <div className="flex gap-x-5">
+                    <Pencil
+                      size={16}
+                      role="button"
+                      className="cursor-pointer"
+                      onClick={async () => {
+                        router.push(editProductPath(product.id));
+                      }}
+                    />
+                    <DialogTrigger
+                      asChild
+                      role="button"
+                      className="cursor-pointer hover:text-red-600"
+                      onClick={() => setSelectedItem(index)}
+                    >
+                      <Trash size={16} />
+                    </DialogTrigger>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         {products.length === 0 && isLoading === false ? (

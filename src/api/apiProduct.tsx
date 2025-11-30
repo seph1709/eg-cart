@@ -1,5 +1,6 @@
 import { Product } from "@/app/dashboard/types";
 import { supabase } from "./supabase";
+import { ScheduledTask } from "@/app/dashboard/schedule-task/types";
 
 export async function getProducts() {
   const { data: products, error } = await supabase.from("products").select("*");
@@ -7,6 +8,50 @@ export async function getProducts() {
     console.error("Error fetching products:", error);
   }
   return products ?? [];
+}
+
+export async function getScheduledTasks() {
+  const { data: tasks, error } = await supabase
+    .from("scheduled_tasks")
+    .select("*");
+
+  if (error) {
+    console.error("Error fetching scheduleTask:", error);
+  }
+
+  return tasks ?? [];
+}
+
+export async function insertScheduledTask(task: ScheduledTask) {
+  const { data, error } = await supabase
+    .from("scheduled_tasks")
+    .insert([task])
+    .select();
+
+  return { data, error };
+}
+
+export async function deleteScheduledTask(taskId: string) {
+  const { data, error } = await supabase
+    .from("scheduled_tasks")
+    .delete()
+    .eq("id", taskId)
+    .select();
+
+  return { data, error };
+}
+
+export async function updateScheduledTask(
+  taskId: string,
+  taskData: ScheduledTask
+) {
+  const { data, error } = await supabase
+    .from("scheduled_tasks")
+    .update(taskData)
+    .eq("id", taskId)
+    .select();
+
+  return { data, error };
 }
 
 export async function insertProducts(product: Product) {

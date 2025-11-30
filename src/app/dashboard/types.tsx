@@ -46,7 +46,7 @@ export interface Product {
   quantity: number;
   available: boolean;
   supplier: string;
-  coordinates: { x: number; y: number };
+  coordinates: Coordinates;
   price: number;
   description: string;
   dateAdded: string;
@@ -55,12 +55,7 @@ export interface Product {
   expirationDate: string;
   weight: string;
   brand: string;
-  category:
-    | "Fruits & Vegetables"
-    | "Dairy and Eggs"
-    | "Meat & Fish"
-    | "Bakery"
-    | "Beverages";
+  category: ProductClassification;
   barcode: string;
   minStockLevel: number;
   maxStockLevel: number;

@@ -3,7 +3,7 @@ import { LucideKanban } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
-import { adminLoginPath, dashboardPath } from "@/path";
+import { adminLoginPath, dashboardPath, scheduleTaskPath } from "@/path";
 import { supabase } from "@/api/supabase";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,29 @@ function Header() {
             <h1 className="text-lg font-semibold">E-G Cart</h1>
           </Link>
         </Button>
+
+        <div className="flex flex-row">
+          <div>
+            <Link href={scheduleTaskPath}>
+              <Button
+                variant="ghost"
+                className="text-gray-500 hover:text-black"
+              >
+                Schedule
+              </Button>
+            </Link>
+          </div>
+          <div>
+            <Link href={dashboardPath}>
+              <Button
+                variant="ghost"
+                className="text-gray-500 hover:text-black"
+              >
+                Dashboard
+              </Button>
+            </Link>
+          </div>
+        </div>
         <div className="flex items-center gap-x-2">
           <Button
             variant="outline"
