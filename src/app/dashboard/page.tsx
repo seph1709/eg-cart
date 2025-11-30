@@ -43,6 +43,7 @@ function Page() {
   const [seletedItem, setSelectedItem] = useState<number | null>();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [category, setCategory] = useState<string>("all");
   const router = useRouter();
 
   async function fetchProduct() {
@@ -55,12 +56,31 @@ function Page() {
     fetchProduct();
   }, []);
 
+  const categories = [
+    "all",
+    ...Array.from(new Set(products.map((p) => p.category))),
+  ];
+
   const filteredProducts = products
     .filter((product: Product) => {
+      // category filter
+      const prodCategory = product.category;
+      const savedCategory = localStorage.getItem("category-filter") ?? category;
+      const isCategorizeEnabled =
+        savedCategory !== "all" && prodCategory !== savedCategory;
+
       if (searchKey === "name") {
-        return product.name.toLowerCase().includes(search.toLowerCase());
+        if (isCategorizeEnabled) {
+          return false;
+        } else {
+          return product.name.toLowerCase().includes(search.toLowerCase());
+        }
       } else if (searchKey === "price") {
-        return product.price.toString().includes(search);
+        if (isCategorizeEnabled) {
+          return false;
+        } else {
+          return product.price.toString().includes(search);
+        }
       }
       return true;
     })
@@ -133,18 +153,26 @@ function Page() {
             </DialogClose>
           </DialogFooter>
         </DialogContent>
-        <TableToolBar
-          search={search}
-          setSearch={setSearch}
-          searchKey={searchKey}
-          setSearchKey={setSearchKey}
-          sortKey={sortKey}
-          setSortKey={setSortKey}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          limit={limit}
-          setLimit={setLimit}
-        />
+
+        {/* Toolbar + Category filter (same UI area) */}
+        <div className="flex items-center gap-3 mb-3">
+          <TableToolBar
+            search={search}
+            setSearch={setSearch}
+            searchKey={searchKey}
+            setSearchKey={setSearchKey}
+            sortKey={sortKey}
+            setSortKey={setSortKey}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            limit={limit}
+            setLimit={setLimit}
+            categories={categories}
+            setCategory={setCategory}
+            category={category}
+          />
+        </div>
+
         <Table className="border h-[100px]  ">
           <TableHeader>
             <TableRow>
