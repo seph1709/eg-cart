@@ -65,4 +65,5 @@ export interface Product {
   minStockLevel: number;
   maxStockLevel: number;
   currentStockLevel: number;
+  rackLevel: number;
 }

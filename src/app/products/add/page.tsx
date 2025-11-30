@@ -145,7 +145,7 @@ function Page() {
   ) => {
     const { name, value } = e.target;
     if (
-      name === "quantity" ||
+      name === "rackLevel" ||
       name === "price" ||
       name === "discount" ||
       name === "minStockLevel" ||
@@ -372,14 +372,14 @@ function Page() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="quantity" className="text-sm">
-                        Quantity
+                      <Label htmlFor="rackLevel" className="text-sm">
+                        rackLevel
                       </Label>
                       <Input
-                        id="quantity"
-                        name="quantity"
+                        id="rackLevel"
+                        name="rackLevel"
                         type="number"
-                        value={form.quantity == 0 ? "" : form.quantity}
+                        value={form.rackLevel == 0 ? "" : form.rackLevel}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />

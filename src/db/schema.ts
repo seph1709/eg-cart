@@ -27,9 +27,6 @@ export const productsTable = pgTable("products", {
   // 💡 Assuming it's nullable based on the interface not explicitly showing it as required.
   classification: text("classification"),
 
-  // The quantity of the product in stock.
-  quantity: integer("quantity").notNull(),
-
   // A boolean indicating if the product is available.
   available: boolean("available").notNull().default(true),
 
@@ -79,6 +76,8 @@ export const productsTable = pgTable("products", {
 
   // 4. ADDED: The current stock level (derived/calculated field based on interface).
   currentStockLevel: integer("currentStockLevel").notNull(),
+  // add initial rack level
+  rackLevel: integer("rackLevel").notNull().default(0),
 });
 
 // 5. Fixed the typo: 'InserProducts' -> 'InsertProducts'

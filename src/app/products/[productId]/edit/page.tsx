@@ -158,7 +158,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
   ) => {
     const { name, value } = e.target;
     if (
-      name === "quantity" ||
+      name === "racklevel" ||
       name === "price" ||
       name === "discount" ||
       name === "minStockLevel" ||
@@ -379,14 +379,14 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="quantity" className="text-sm">
-                        Quantity
+                      <Label htmlFor="rackLevel" className="text-sm">
+                        rackLevel
                       </Label>
                       <Input
-                        id="quantity"
-                        name="quantity"
+                        id="rackLevel"
+                        name="rackLevel"
                         type="number"
-                        value={form.quantity}
+                        value={form.rackLevel}
                         onChange={handleChange}
                         className="mt-1 h-9 text-xs"
                       />
