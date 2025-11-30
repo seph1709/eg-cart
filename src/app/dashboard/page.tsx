@@ -146,7 +146,7 @@ function Page() {
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>Classification</TableHead>
-              <TableHead>Quantity</TableHead>
+              <TableHead>Current Stock</TableHead>
               <TableHead>Price</TableHead>
               <TableHead>Available</TableHead>
               <TableHead>Supplier</TableHead>
@@ -163,7 +163,7 @@ function Page() {
                 <TableRow key={product.id}>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.classification}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
+                  <TableCell>{product.currentStockLevel}</TableCell>
                   <TableCell>₱ {product.price}</TableCell>
                   <TableCell>{product.available.toString()}</TableCell>
                   <TableCell>{product.supplier}</TableCell>
