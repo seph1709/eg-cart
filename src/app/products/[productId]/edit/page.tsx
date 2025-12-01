@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 import { Product } from "@/app/dashboard/types";
 import { use } from "react";
 import { classificationOptions, monthOptions, yearOptions } from "./constants";
-import { categoryOptions, unitOptions } from "@/app/dashboard/constants";
+import { categoryOptions } from "@/app/dashboard/constants";
 import { useRouter } from "next/navigation";
 import { dashboardPath } from "@/path";
 import { getProducts, updateProduct } from "@/api/apiProduct";

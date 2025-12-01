@@ -22,7 +22,6 @@ import { addProductPath } from "@/path";
 function TableToolBar({
   search,
   setSearch,
-  searchKey,
   setSearchKey,
   sortKey,
   setSortKey,
