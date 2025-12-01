@@ -35,20 +35,30 @@ type SortOrder = "asc" | "desc";
 type SearchKey = "name" | "price";
 
 function Page() {
-  const [search, setSearch] = useState(localStorage.getItem("search") ?? "");
+  const [search, setSearch] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("search") ?? "" : ""
+  );
   const [searchKey, setSearchKey] = useState<SearchKey>(
-    (localStorage.getItem("searchKey") as SearchKey) ?? "name"
+    typeof window !== "undefined"
+      ? (localStorage.getItem("searchKey") as SearchKey) ?? "name"
+      : "name"
   );
   const [sortKey, setSortKey] = useState<SortKey>(
-    (localStorage.getItem("sortKey") as SortKey) ?? "name"
+    typeof window !== "undefined"
+      ? (localStorage.getItem("sortKey") as SortKey) ?? "name"
+      : "name"
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (localStorage.getItem("sortOrder") as SortOrder) ?? "asc"
+    typeof window !== "undefined"
+      ? (localStorage.getItem("sortOrder") as SortOrder) ?? "asc"
+      : "asc"
   );
   const [limit, setLimit] = useState<number>(
-    localStorage.getItem("limit") == null
-      ? 10
-      : Number(localStorage.getItem("limit"))
+    typeof window !== "undefined"
+      ? localStorage.getItem("limit") == null
+        ? 10
+        : Number(localStorage.getItem("limit"))
+      : 10
   );
   const [seletedItem, setSelectedItem] = useState<number | null>();
   const [products, setProducts] = useState<Product[]>([]);
@@ -75,7 +85,10 @@ function Page() {
     .filter((product: Product) => {
       // category filter
       const prodCategory = product.category;
-      const savedCategory = localStorage.getItem("category-filter") ?? category;
+      const savedCategory =
+        typeof window !== "undefined"
+          ? localStorage.getItem("category-filter") ?? category
+          : category;
       const isCategorizeEnabled =
         savedCategory !== "all" && prodCategory !== savedCategory;
 

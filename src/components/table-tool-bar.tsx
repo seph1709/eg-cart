@@ -39,15 +39,19 @@ function TableToolBar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="min-w-[120px]">
-              {(localStorage.getItem("SearchKey") ?? search) === "name"
-                ? "Search by name"
-                : "Search by price"}
+              {typeof window !== "undefined"
+                ? (localStorage.getItem("SearchKey") ?? search) === "name"
+                  ? "Search by name"
+                  : "Search by price"
+                : "name"}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem
               onSelect={() => {
-                localStorage.setItem("SearchKey", "name");
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("SearchKey", "name");
+                }
                 setSearchKey("name");
               }}
             >
@@ -55,7 +59,9 @@ function TableToolBar({
             </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={() => {
-                localStorage.setItem("SearchKey", "price");
+                if (typeof window !== "undefined") {
+                  localStorage.setItem("SearchKey", "price");
+                }
                 setSearchKey("price");
               }}
             >
@@ -65,20 +71,26 @@ function TableToolBar({
         </DropdownMenu>
         <Input
           placeholder={
-            (localStorage.getItem("SearchKey") ?? search) === "name"
-              ? "Search products..."
-              : "Search price..."
+            typeof window !== "undefined"
+              ? (localStorage.getItem("SearchKey") ?? search) === "name"
+                ? "Search products..."
+                : "Search price..."
+              : "name"
           }
           value={search}
           onChange={(e) => {
-            localStorage.setItem("search", e.target.value);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("search", e.target.value);
+            }
             setSearch(e.target.value);
           }}
           className="max-w-xs"
           type={
-            (localStorage.getItem("SearchKey") ?? search) === "price"
-              ? "number"
-              : "text"
+            typeof window !== "undefined"
+              ? (localStorage.getItem("SearchKey") ?? search) === "price"
+                ? "number"
+                : "text"
+              : "price"
           }
         />
       </div>
@@ -89,7 +101,9 @@ function TableToolBar({
         <Select
           value={limit.toString()}
           onValueChange={(val) => {
-            localStorage.setItem("limit", val);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("limit", val);
+            }
             setLimit(Number(val));
           }}
         >
@@ -127,9 +141,15 @@ function TableToolBar({
           </Select>
         </div>
         <Select
-          value={(localStorage.getItem("sortOrder") as SortOrder) ?? sortOrder}
+          value={
+            typeof window !== "undefined"
+              ? (localStorage.getItem("sortOrder") as SortOrder) ?? sortOrder
+              : sortOrder
+          }
           onValueChange={(val) => {
-            localStorage.setItem("sortOrder", val);
+            if (typeof window !== "undefined") {
+              localStorage.setItem("sortOrder", val);
+            }
             setSortOrder(val as SortOrder);
           }}
         >
@@ -145,10 +165,16 @@ function TableToolBar({
         <div className="flex items-center gap-2">
           <span className="text-sm  whitespace-nowrap">Category:</span>
           <Select
-            value={localStorage.getItem("category-filter") ?? category}
+            value={
+              typeof window !== "undefined"
+                ? localStorage.getItem("category-filter") ?? category
+                : category
+            }
             onValueChange={(v) => {
               setCategory(v);
-              localStorage.setItem("category-filter", v);
+              if (typeof window !== "undefined") {
+                localStorage.setItem("category-filter", v);
+              }
             }}
           >
             <SelectTrigger className="w-[180px]">
