@@ -42,8 +42,8 @@ function TableToolBar({
               {typeof window !== "undefined"
                 ? (localStorage.getItem("SearchKey") ?? search) === "name"
                   ? "Search by name"
-                  : "Search by price"
-                : "name"}
+                  : "Search by ID"
+                : "id"}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -60,12 +60,12 @@ function TableToolBar({
             <DropdownMenuItem
               onSelect={() => {
                 if (typeof window !== "undefined") {
-                  localStorage.setItem("SearchKey", "price");
+                  localStorage.setItem("SearchKey", "id");
                 }
-                setSearchKey("price");
+                setSearchKey("id");
               }}
             >
-              Price
+              Product Id
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -74,7 +74,7 @@ function TableToolBar({
             typeof window !== "undefined"
               ? (localStorage.getItem("SearchKey") ?? search) === "name"
                 ? "Search products..."
-                : "Search price..."
+                : "Search id..."
               : "name"
           }
           value={search}
@@ -85,13 +85,7 @@ function TableToolBar({
             setSearch(e.target.value);
           }}
           className="max-w-xs"
-          type={
-            typeof window !== "undefined"
-              ? (localStorage.getItem("SearchKey") ?? search) === "price"
-                ? "number"
-                : "text"
-              : "price"
-          }
+          type={"text"}
         />
       </div>
       <div className="flex gap-4 items-center">

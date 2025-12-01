@@ -26,13 +26,9 @@ import { Button } from "@/components/ui/button";
 import { editProductPath } from "@/path";
 import { useRouter } from "next/navigation";
 import { deleteProduct, getProducts } from "@/api/apiProduct";
-import { Product } from "./types";
+import { Product, SearchKey, SortKey, SortOrder } from "./types";
 import toast, { Toaster } from "react-hot-toast";
 import LoadingIndicator from "@/components/Loading";
-
-type SortKey = "name" | "price" | "dateAdded" | "expirationDate";
-type SortOrder = "asc" | "desc";
-type SearchKey = "name" | "price";
 
 function Page() {
   const [search, setSearch] = useState(
@@ -98,11 +94,11 @@ function Page() {
         } else {
           return product.name.toLowerCase().includes(search.toLowerCase());
         }
-      } else if (searchKey === "price") {
+      } else if (searchKey === "id") {
         if (isCategorizeEnabled) {
           return false;
         } else {
-          return product.price.toString().includes(search);
+          return product.id.toString().includes(search);
         }
       }
       return true;
@@ -203,6 +199,7 @@ function Page() {
         <Table className="border h-[100px]  ">
           <TableHeader>
             <TableRow>
+              <TableHead>ID</TableHead>
               <TableHead>Product</TableHead>
               <TableHead>Classification</TableHead>
               <TableHead>Current Stock</TableHead>
@@ -211,12 +208,14 @@ function Page() {
               <TableHead>Supplier</TableHead>
               <TableHead>Coordinates ( x , y )</TableHead>
               <TableHead>Expiration Date</TableHead>
+              <TableHead>Date Added</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="overflow-y-scroll  max-w-full">
             {limitedProducts.map((product, index) => (
               <TableRow key={product.id}>
+                <TableCell>{product.id}</TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.classification}</TableCell>
                 <TableCell>{product.currentStockLevel}</TableCell>
@@ -228,6 +227,7 @@ function Page() {
                   <div>{product.coordinates.y}</div>
                 </TableCell>
                 <TableCell>{product.expirationDate}</TableCell>
+                <TableCell>{product.dateAdded}</TableCell>
                 <TableCell>
                   <div className="flex gap-x-5">
                     <Pencil
