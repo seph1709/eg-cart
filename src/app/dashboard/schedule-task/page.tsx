@@ -85,62 +85,70 @@ export default function Page() {
   });
 
   useEffect(() => {
-    filterAndSortTasks();
-    fetchScheduleTasks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, sortField, sortOrder]);
+    async function fetch() {
+      try {
+        const data = await getScheduledTasks();
+        setScheduleTasks(data);
+        setIsLoading(false);
 
-  async function fetchScheduleTasks() {
-    try {
-      const data = await getScheduledTasks();
-      setScheduleTasks(data);
-      setIsLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch scheduled tasks:", error);
-      setIsLoading(false);
-    }
-  }
+        console.log(data);
 
-  function filterAndSortTasks() {
-    let filtered = [...scheduleTasks];
+        return;
+      } catch (error) {
+        console.error("Failed to fetch scheduled tasks:", error);
+        setIsLoading(false);
 
-    // Apply search filter
-    if (searchQuery.trim() !== "") {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (task) =>
-          task.supplierName.toLowerCase().includes(query) ||
-          task.id.toLowerCase().includes(query)
-      );
+        return;
+      }
     }
 
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let comparison = 0;
+    fetch();
+  }, []);
 
-      switch (sortField) {
-        case "arriveDate":
-          comparison =
-            new Date(a.arriveDate).getTime() - new Date(b.arriveDate).getTime();
-          break;
-        case "dateStarted":
-          comparison =
-            new Date(a.dateStarted).getTime() -
-            new Date(b.dateStarted).getTime();
-          break;
-        case "totalCost":
-          comparison = a.totalCost - b.totalCost;
-          break;
-        case "isPaid":
-          comparison = a.isPaid === b.isPaid ? 0 : a.isPaid ? -1 : 1;
-          break;
+  useEffect(() => {
+    function filterAndSortTasks() {
+      let filtered = [...scheduleTasks];
+
+      // Apply search filter
+      if (searchQuery.trim() !== "") {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(
+          (task) =>
+            task.supplierName.toLowerCase().includes(query) ||
+            task.id.toLowerCase().includes(query)
+        );
       }
 
-      return sortOrder === "asc" ? comparison : -comparison;
-    });
+      // Apply sorting
+      filtered.sort((a, b) => {
+        let comparison = 0;
 
-    setFilteredTasks(filtered);
-  }
+        switch (sortField) {
+          case "arriveDate":
+            comparison =
+              new Date(a.arriveDate).getTime() -
+              new Date(b.arriveDate).getTime();
+            break;
+          case "dateStarted":
+            comparison =
+              new Date(a.dateStarted).getTime() -
+              new Date(b.dateStarted).getTime();
+            break;
+          case "totalCost":
+            comparison = a.totalCost - b.totalCost;
+            break;
+          case "isPaid":
+            comparison = a.isPaid === b.isPaid ? 0 : a.isPaid ? -1 : 1;
+            break;
+        }
+
+        return sortOrder === "asc" ? comparison : -comparison;
+      });
+
+      setFilteredTasks(filtered);
+    }
+    filterAndSortTasks();
+  }, [scheduleTasks, searchQuery, sortField, sortOrder]);
 
   const getStatusVariant = (
     status: ScheduleTaskStatus
@@ -204,12 +212,12 @@ export default function Page() {
   const handleUpdateTask = async (updatedTask: ScheduledTask) => {
     const { data } = await updateScheduledTask(updatedTask.id, updatedTask);
 
-    if (data) {
-      fetchScheduleTasks();
+    if (data != null) {
+      setScheduleTasks(data);
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const {
       id,
       supplierName,
@@ -252,8 +260,15 @@ export default function Page() {
     ) {
       // Add new task - call your API here
       console.log("created true with data");
-      insertScheduledTask(formData);
-      fetchScheduleTasks();
+      const { data } = await insertScheduledTask(formData);
+
+      console.log(data);
+
+      if (data !== null) {
+        console.log("updated");
+        const data = await getScheduledTasks();
+        setScheduleTasks(data);
+      }
     }
     setIsEditDialogOpen(false);
     setEditingTask(null);
@@ -266,8 +281,11 @@ export default function Page() {
       setDeletingTaskId(null);
       setIsDeleteDialogOpen(false);
 
-      if (data) {
-        fetchScheduleTasks();
+      console.log(data);
+
+      if (data != null) {
+        const data = await getScheduledTasks();
+        setScheduleTasks(data);
       }
     }
   };
@@ -275,7 +293,6 @@ export default function Page() {
   const handleDelete = (taskId: string) => {
     setDeletingTaskId(taskId);
     setIsDeleteDialogOpen(true);
-    fetchScheduleTasks();
   };
 
   const handleInputChange = (
@@ -288,6 +305,8 @@ export default function Page() {
   if (isLoading) {
     return <LoadingIndicator />;
   }
+
+  console.log(scheduleTasks.length);
 
   return (
     <div className="container mx-auto py-6 px-4">
