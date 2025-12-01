@@ -1,7 +1,7 @@
 "use client";
 import { Dispatch, SetStateAction } from "react";
 
-export type SortKey = "name" | "price" | "dateAdded";
+export type SortKey = "name" | "price" | "dateAdded" | "expirationDate";
 export type SortOrder = "asc" | "desc";
 export type SearchKey = "name" | "price";
 

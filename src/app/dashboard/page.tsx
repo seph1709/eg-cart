@@ -30,16 +30,26 @@ import { Product } from "./types";
 import toast, { Toaster } from "react-hot-toast";
 import LoadingIndicator from "@/components/Loading";
 
-type SortKey = "name" | "price" | "dateAdded";
+type SortKey = "name" | "price" | "dateAdded" | "expirationDate";
 type SortOrder = "asc" | "desc";
 type SearchKey = "name" | "price";
 
 function Page() {
-  const [search, setSearch] = useState("");
-  const [searchKey, setSearchKey] = useState<SearchKey>("name");
-  const [sortKey, setSortKey] = useState<SortKey>("name");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
-  const [limit, setLimit] = useState<number>(10);
+  const [search, setSearch] = useState(localStorage.getItem("search") ?? "");
+  const [searchKey, setSearchKey] = useState<SearchKey>(
+    (localStorage.getItem("searchKey") as SearchKey) ?? "name"
+  );
+  const [sortKey, setSortKey] = useState<SortKey>(
+    (localStorage.getItem("sortKey") as SortKey) ?? "name"
+  );
+  const [sortOrder, setSortOrder] = useState<SortOrder>(
+    (localStorage.getItem("sortOrder") as SortOrder) ?? "asc"
+  );
+  const [limit, setLimit] = useState<number>(
+    localStorage.getItem("limit") == null
+      ? 10
+      : Number(localStorage.getItem("limit"))
+  );
   const [seletedItem, setSelectedItem] = useState<number | null>();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,6 +103,10 @@ function Page() {
       } else if (sortKey === "dateAdded") {
         compare =
           new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime();
+      } else if (sortKey === "expirationDate") {
+        compare =
+          new Date(a.expirationDate).getTime() -
+          new Date(b.expirationDate).getTime();
       }
       return sortOrder === "asc" ? compare : -compare;
     });

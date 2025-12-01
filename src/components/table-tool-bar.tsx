@@ -40,26 +40,47 @@ function TableToolBar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="min-w-[120px]">
-              {searchKey === "name" ? "Search by name" : "Search by price"}
+              {(localStorage.getItem("SearchKey") ?? search) === "name"
+                ? "Search by name"
+                : "Search by price"}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onSelect={() => setSearchKey("name")}>
+            <DropdownMenuItem
+              onSelect={() => {
+                localStorage.setItem("SearchKey", "name");
+                setSearchKey("name");
+              }}
+            >
               Product Name
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setSearchKey("price")}>
+            <DropdownMenuItem
+              onSelect={() => {
+                localStorage.setItem("SearchKey", "price");
+                setSearchKey("price");
+              }}
+            >
               Price
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Input
           placeholder={
-            searchKey === "name" ? "Search products..." : "Search price..."
+            (localStorage.getItem("SearchKey") ?? search) === "name"
+              ? "Search products..."
+              : "Search price..."
           }
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            localStorage.setItem("search", e.target.value);
+            setSearch(e.target.value);
+          }}
           className="max-w-xs"
-          type={searchKey === "price" ? "number" : "text"}
+          type={
+            (localStorage.getItem("SearchKey") ?? search) === "price"
+              ? "number"
+              : "text"
+          }
         />
       </div>
       <div className="flex gap-4 items-center">
@@ -68,7 +89,10 @@ function TableToolBar({
         </label>
         <Select
           value={limit.toString()}
-          onValueChange={(val) => setLimit(Number(val))}
+          onValueChange={(val) => {
+            localStorage.setItem("limit", val);
+            setLimit(Number(val));
+          }}
         >
           <SelectTrigger className="w-[80px]" id="limit">
             <SelectValue />
@@ -84,8 +108,13 @@ function TableToolBar({
         <span className="text-sm w-[180px]">Sort by</span>
         <div>
           <Select
-            value={sortKey}
-            onValueChange={(val) => setSortKey(val as SortKey)}
+            value={(localStorage.getItem("sortKey") as SortKey) ?? sortKey}
+            onValueChange={(val) => {
+              console.log(val);
+
+              localStorage.setItem("sortKey", val);
+              setSortKey(val as SortKey);
+            }}
           >
             <SelectTrigger className="w-[130px]">
               <SelectValue />
@@ -94,12 +123,16 @@ function TableToolBar({
               <SelectItem value="name">Name</SelectItem>
               <SelectItem value="price">Price</SelectItem>
               <SelectItem value="dateAdded">Date Added</SelectItem>
+              <SelectItem value="expirationDate">Expiration Date</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <Select
-          value={sortOrder}
-          onValueChange={(val) => setSortOrder(val as SortOrder)}
+          value={(localStorage.getItem("sortOrder") as SortOrder) ?? sortOrder}
+          onValueChange={(val) => {
+            localStorage.setItem("sortOrder", val);
+            setSortOrder(val as SortOrder);
+          }}
         >
           <SelectTrigger className="w-[130px]">
             <SelectValue />
@@ -115,9 +148,8 @@ function TableToolBar({
           <Select
             value={localStorage.getItem("category-filter") ?? category}
             onValueChange={(v) => {
-                            setCategory(v);
+              setCategory(v);
               localStorage.setItem("category-filter", v);
-
             }}
           >
             <SelectTrigger className="w-[180px]">

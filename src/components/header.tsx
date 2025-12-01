@@ -37,7 +37,7 @@ function Header() {
                 variant="ghost"
                 className="text-gray-500 hover:text-black"
               >
-                Dashboard
+                Products
               </Button>
             </Link>
           </div>
