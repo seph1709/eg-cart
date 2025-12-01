@@ -210,7 +210,7 @@ function Page() {
               <TableHead>Available</TableHead>
               <TableHead>Supplier</TableHead>
               <TableHead>Coordinates ( x , y )</TableHead>
-              <TableHead>Date Added</TableHead>
+              <TableHead>Expiration Date</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -227,7 +227,7 @@ function Page() {
                   <div>{product.coordinates.x}</div>
                   <div>{product.coordinates.y}</div>
                 </TableCell>
-                <TableCell>{product.dateAdded}</TableCell>
+                <TableCell>{product.expirationDate}</TableCell>
                 <TableCell>
                   <div className="flex gap-x-5">
                     <Pencil
