@@ -6,3 +6,4 @@ export const editProductPath = (productId: string) =>
   `/products/${productId}/edit/`;
 export const adminLoginPath = "/admin-login";
 export const scheduleTaskPath = "/dashboard/schedule-task";
+export const indoorMapPath = "/dashboard/indoor-map";

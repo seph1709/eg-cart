@@ -3,13 +3,22 @@ import { LucideKanban } from "lucide-react";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
-import { adminLoginPath, dashboardPath, scheduleTaskPath } from "@/path";
+import {
+  adminLoginPath,
+  dashboardPath,
+  indoorMapPath,
+  scheduleTaskPath,
+} from "@/path";
 import { supabase } from "@/api/supabase";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 function Header() {
   const router = useRouter();
+  const pathname = usePathname();
+  console.log(pathname);
+
   return (
     <nav className="fixed w-full z-20 bg-background/95">
       <div className="flex justify-between px-5 py-2.5 items-center">
@@ -22,26 +31,43 @@ function Header() {
 
         <div className="flex flex-row">
           <div>
+            <Link href={dashboardPath}>
+              <Button
+                variant="ghost"
+                className={`${
+                  pathname == dashboardPath ? "text-black" : "text-gray-500"
+                } hover:text-black`}
+              >
+                Products
+              </Button>
+            </Link>
+          </div>
+          <div>
             <Link href={scheduleTaskPath}>
               <Button
                 variant="ghost"
-                className="text-gray-500 hover:text-black"
+                className={`${
+                  pathname == scheduleTaskPath ? "text-black" : "text-gray-500"
+                } hover:text-black`}
               >
                 Schedule
               </Button>
             </Link>
           </div>
           <div>
-            <Link href={dashboardPath}>
+            <Link href={indoorMapPath}>
               <Button
                 variant="ghost"
-                className="text-gray-500 hover:text-black"
+                className={`${
+                  pathname == indoorMapPath ? "text-black" : "text-gray-500"
+                } hover:text-black`}
               >
-                Products
+                Indoor Map
               </Button>
             </Link>
           </div>
         </div>
+
         <div className="flex items-center gap-x-2">
           <Button
             variant="outline"

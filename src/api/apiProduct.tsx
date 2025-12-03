@@ -1,6 +1,7 @@
 import { Product } from "@/app/dashboard/types";
 import { supabase } from "./supabase";
 import { ScheduledTask } from "@/app/dashboard/schedule-task/types";
+import { PostgrestError } from "@supabase/supabase-js";
 
 export async function getProducts() {
   const { data: products, error } = await supabase.from("products").select("*");
@@ -20,6 +21,34 @@ export async function getScheduledTasks() {
   }
 
   return tasks ?? [];
+}
+
+export async function getIndoorGeoJson() {
+  interface content {
+    data: string;
+    error: PostgrestError | null;
+  }
+  const { data, error } = await supabase.from("geojson").select("*");
+
+  if (error) {
+    console.error("Error fetching scheduleTask:", error);
+  }
+
+  console.log(data);
+
+  return data;
+}
+
+export async function updateIndoorGeoJson(id: string, content: string) {
+  console.log(id);
+
+  const { data, error } = await supabase
+    .from("geojson")
+    .update([{ content }])
+    .eq("id", id)
+    .select();
+
+  return { data, error };
 }
 
 export async function insertScheduledTask(task: ScheduledTask) {
