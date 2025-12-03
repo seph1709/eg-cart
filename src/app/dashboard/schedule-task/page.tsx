@@ -213,7 +213,8 @@ export default function Page() {
     const { data } = await updateScheduledTask(updatedTask.id, updatedTask);
 
     if (data != null) {
-      setScheduleTasks(data);
+       const data = await getScheduledTasks();
+        setScheduleTasks(data);
     }
   };
 

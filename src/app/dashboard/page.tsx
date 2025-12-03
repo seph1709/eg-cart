@@ -60,7 +60,7 @@ function Page() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState<string>("all");
-  const router = useRouter();
+  const router = useRouter();    
 
   async function fetchProduct() {
     const products = await getProducts();
