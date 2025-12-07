@@ -1,7 +1,6 @@
 import { Product } from "@/app/dashboard/types";
 import { supabase } from "./supabase";
 import { ScheduledTask } from "@/app/dashboard/schedule-task/types";
-import { PostgrestError } from "@supabase/supabase-js";
 
 export async function getProducts() {
   const { data: products, error } = await supabase.from("products").select("*");
@@ -24,10 +23,6 @@ export async function getScheduledTasks() {
 }
 
 export async function getIndoorGeoJson() {
-  interface content {
-    data: string;
-    error: PostgrestError | null;
-  }
   const { data, error } = await supabase.from("geojson").select("*");
 
   if (error) {
@@ -110,4 +105,18 @@ export async function deleteProduct(productId: string) {
     .select();
 
   return { data, error };
+}
+
+export async function getPrivacyPolicy() {
+  const { data, error } = await supabase
+    .from("document_policy")
+    .select("*")
+    .eq("id", "01");
+  if (error) {
+    console.error("Error fetching products:", error);
+  }
+
+  console.log(data);
+  if (data === null) return "";
+  return data[0]["content"];
 }

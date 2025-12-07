@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @plugin "tailwindcss-motion";
 @import 'tailwind-scrollbar-hide/v4';
+@plugin "@tailwindcss/typography";
+
+/* optional: tighten prose for a professional look */
+@utility prose-policy {
+  @apply prose prose-slate max-w-none;
+}
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
