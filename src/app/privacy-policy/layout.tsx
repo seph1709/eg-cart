@@ -5,7 +5,7 @@ function layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  metadata.title = "Privacy Plicy - EG Cart";
+  metadata.title = "Privacy Policy - EG Cart";
   return <div>{children}</div>;
 }
 
