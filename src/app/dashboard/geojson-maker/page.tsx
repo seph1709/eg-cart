@@ -789,9 +789,11 @@ export default function IndoorMapCreator() {
              };
              properties['description'] = f.textContent;
         }
-        else {
-             // LineStrings (Path, Wall)
+        else if (f.type === 'wall' || f.type === 'path') {
+             // Wall must be LineString
+             // Format: [ [lon, lat], [lon, lat], ... ]
              const coords = f.coordinates.map(c => metersToLonLat(c.x, c.y));
+             
              geometry = {
                  type: 'LineString',
                  coordinates: coords
@@ -902,7 +904,49 @@ export default function IndoorMapCreator() {
              </div>
              
              <button 
-                onClick={() => { setShowSetup(false); updateFeatures([]); }}
+                onClick={() => { 
+                  setShowSetup(false); 
+                  // AUTO-GENERATE WALLS
+                  const newWalls: MapFeature[] = [
+                    {
+                      id: generateId(),
+                      type: 'wall',
+                      name: 'Bottom Wall',
+                      coordinates: [{x: 0, y: 0}, {x: roomWidth, y: 0}],
+                      layerId: 0, level: currentLevel, isLocked: false,
+                      width: 0, height: 0, radius: 0,
+                      pathColor: '#424242', pathThickness: 6.0, fillColor: '', strokeColor: '', strokeWidth: 0, textContent: '', fontSize: 0, rotation: 0, opacity: 1, amenity: 'wall'
+                    },
+                    {
+                      id: generateId(),
+                      type: 'wall',
+                      name: 'Right Wall',
+                      coordinates: [{x: roomWidth, y: 0}, {x: roomWidth, y: roomHeight}],
+                      layerId: 0, level: currentLevel, isLocked: false,
+                      width: 0, height: 0, radius: 0,
+                      pathColor: '#424242', pathThickness: 6.0, fillColor: '', strokeColor: '', strokeWidth: 0, textContent: '', fontSize: 0, rotation: 0, opacity: 1, amenity: 'wall'
+                    },
+                    {
+                      id: generateId(),
+                      type: 'wall',
+                      name: 'Top Wall',
+                      coordinates: [{x: roomWidth, y: roomHeight}, {x: 0, y: roomHeight}],
+                      layerId: 0, level: currentLevel, isLocked: false,
+                      width: 0, height: 0, radius: 0,
+                      pathColor: '#424242', pathThickness: 6.0, fillColor: '', strokeColor: '', strokeWidth: 0, textContent: '', fontSize: 0, rotation: 0, opacity: 1, amenity: 'wall'
+                    },
+                    {
+                      id: generateId(),
+                      type: 'wall',
+                      name: 'Left Wall',
+                      coordinates: [{x: 0, y: roomHeight}, {x: 0, y: 0}],
+                      layerId: 0, level: currentLevel, isLocked: false,
+                      width: 0, height: 0, radius: 0,
+                      pathColor: '#424242', pathThickness: 6.0, fillColor: '', strokeColor: '', strokeWidth: 0, textContent: '', fontSize: 0, rotation: 0, opacity: 1, amenity: 'wall'
+                    }
+                  ];
+                  updateFeatures(newWalls); 
+                }}
                 className="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
              >
                 Start Creating <ChevronRight size={18} />
