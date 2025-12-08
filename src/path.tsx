@@ -7,3 +7,4 @@ export const editProductPath = (productId: string) =>
 export const adminLoginPath = "/admin-login";
 export const scheduleTaskPath = "/dashboard/schedule-task";
 export const indoorMapPath = "/dashboard/indoor-map";
+export const geojsonMakerPath = "/dashboard/geojson-maker";

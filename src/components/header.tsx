@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   adminLoginPath,
   dashboardPath,
+  geojsonMakerPath,
   indoorMapPath,
   scheduleTaskPath,
 } from "@/path";
@@ -62,7 +63,19 @@ function Header() {
                   pathname == indoorMapPath ? "text-black" : "text-gray-500"
                 } hover:text-black`}
               >
-                Indoor Map
+                Store Map
+              </Button>
+            </Link>
+          </div>
+          <div>
+            <Link href={geojsonMakerPath}>
+              <Button
+                variant="ghost"
+                className={`${
+                  pathname == geojsonMakerPath ? "text-black" : "text-gray-500"
+                } hover:text-black`}
+              >
+                Map Maker
               </Button>
             </Link>
           </div>

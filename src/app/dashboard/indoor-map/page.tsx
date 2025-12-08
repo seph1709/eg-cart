@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getIndoorGeoJson, updateIndoorGeoJson } from "@/api/apiProduct";
 import toast from "react-hot-toast";
+import LoadingIndicator from "@/components/Loading";
 
 type Coordinate = number[];
 type LineStringCoordinates = Coordinate[];
@@ -454,6 +455,10 @@ export default function GeoJSONRenderer() {
       };
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
+
+  if (!input) {
+    return <LoadingIndicator />;
+  }
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-8">

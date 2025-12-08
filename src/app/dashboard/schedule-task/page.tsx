@@ -321,8 +321,8 @@ export default function Page() {
       </div>
 
       {/* Search and Sort Controls */}
-      <Card className="mb-6">
-        <CardContent className="pt-6">
+      <div className="mb-6">
+        <div className="pt-6">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Bar */}
             <div className="flex-1">
@@ -370,8 +370,8 @@ export default function Page() {
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <Card>
         <CardHeader>
