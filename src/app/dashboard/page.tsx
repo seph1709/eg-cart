@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getProducts } from "@/api/apiProduct";
+import { deleteProduct, getProducts } from "@/api/apiProduct";
 import { Product } from "@/app/dashboard/types";
 import {
   AlertTriangle,
@@ -19,11 +19,37 @@ import {
   CalendarClock,
   Layers,
   PackageCheck,
+  Pencil,
+  Trash,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { productsPath } from "@/path";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { editProductPath, productsPath } from "@/path";
+import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import toast, { Toaster } from "react-hot-toast";
 
 function isExpiringSoon(dateStr: string, days = 30) {
   if (!dateStr) return false;
@@ -41,12 +67,18 @@ function isExpired(dateStr: string) {
 export default function DashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const router = useRouter();
 
-  useEffect(() => {
+  function fetchProducts() {
     getProducts().then((data) => {
       setProducts(data);
       setLoading(false);
     });
+  }
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
   if (loading) return <LoadingIndicator />;
@@ -71,6 +103,63 @@ export default function DashboardPage() {
     acc[cat] = (acc[cat] ?? 0) + 1;
     return acc;
   }, {});
+
+  const categoryStockData = Object.entries(
+    products.reduce<Record<string, { current: number; min: number }>>(
+      (acc, p) => {
+        const cat = p.category ?? "Uncategorized";
+        if (!acc[cat]) acc[cat] = { current: 0, min: 0 };
+        acc[cat].current += p.currentStockLevel;
+        acc[cat].min += p.minStockLevel;
+        return acc;
+      },
+      {}
+    )
+  ).map(([name, { current, min }]) => ({ name, current, min }));
+
+  const expiryChartData = [
+    {
+      name: "Expired",
+      count: products.filter((p) => isExpired(p.expirationDate)).length,
+      fill: "#ef4444",
+    },
+    {
+      name: "≤ 7 days",
+      count: products.filter(
+        (p) =>
+          !isExpired(p.expirationDate) && isExpiringSoon(p.expirationDate, 7)
+      ).length,
+      fill: "#f97316",
+    },
+    {
+      name: "8–30 days",
+      count: products.filter(
+        (p) =>
+          !isExpired(p.expirationDate) &&
+          isExpiringSoon(p.expirationDate, 30) &&
+          !isExpiringSoon(p.expirationDate, 7)
+      ).length,
+      fill: "#f59e0b",
+    },
+    {
+      name: "31–90 days",
+      count: products.filter(
+        (p) =>
+          !isExpired(p.expirationDate) &&
+          isExpiringSoon(p.expirationDate, 90) &&
+          !isExpiringSoon(p.expirationDate, 30)
+      ).length,
+      fill: "#a3e635",
+    },
+    {
+      name: "90d+",
+      count: products.filter(
+        (p) =>
+          !isExpired(p.expirationDate) && !isExpiringSoon(p.expirationDate, 90)
+      ).length,
+      fill: "#a1a1aa",
+    },
+  ];
 
   const recentProducts = [...products]
     .sort(
@@ -123,6 +212,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      <Toaster position="top-right" reverseOrder={true} />
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -154,6 +244,64 @@ export default function DashboardPage() {
           </Card>
         ))}
       </div>
+
+      {/* Stock by category chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Stock by Category</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Total current stock vs minimum threshold per category
+          </p>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart
+              data={categoryStockData}
+              margin={{ top: 4, right: 16, left: 0, bottom: 4 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
+              <XAxis
+                dataKey="name"
+                tick={{ fontSize: 12, fill: "#71717a" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fontSize: 12, fill: "#71717a" }}
+                axisLine={false}
+                tickLine={false}
+                width={40}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#fff",
+                  border: "1px solid #e4e4e7",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                }}
+                cursor={{ fill: "#f4f4f5" }}
+              />
+              <Legend
+                wrapperStyle={{ fontSize: "12px", color: "#71717a" }}
+                iconType="square"
+                iconSize={10}
+              />
+              <Bar
+                dataKey="current"
+                name="Current Stock"
+                fill="#18181b"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="min"
+                name="Min Threshold"
+                fill="#a1a1aa"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Category breakdown */}
@@ -240,57 +388,164 @@ export default function DashboardPage() {
         </Card>
       </div>
 
+      {/* Expiry distribution chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Expiry Distribution</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Number of products by how soon they expire
+          </p>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart
+              data={expiryChartData}
+              margin={{ top: 4, right: 16, left: 0, bottom: 4 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
+              <XAxis
+                dataKey="name"
+                tick={{ fontSize: 12, fill: "#71717a" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                allowDecimals={false}
+                tick={{ fontSize: 12, fill: "#71717a" }}
+                axisLine={false}
+                tickLine={false}
+                width={30}
+              />
+              <Tooltip
+                contentStyle={{
+                  background: "#fff",
+                  border: "1px solid #e4e4e7",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                }}
+                cursor={{ fill: "#f4f4f5" }}
+                formatter={(value) => [value, "Products"]}
+              />
+              <Bar dataKey="count" name="Products" radius={[4, 4, 0, 0]}>
+                {expiryChartData.map((entry, index) => (
+                  <Cell key={index} fill={entry.fill} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
       {/* Expiring / Expired alert table */}
       {(expiringSoon > 0 || expired > 0) && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <AlertTriangle size={16} className="text-destructive" />
-              Expiry Alerts
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Expiration Date</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {products
-                  .filter(
-                    (p) =>
-                      isExpired(p.expirationDate) ||
-                      isExpiringSoon(p.expirationDate)
-                  )
-                  .sort(
-                    (a, b) =>
-                      new Date(a.expirationDate).getTime() -
-                      new Date(b.expirationDate).getTime()
-                  )
-                  .map((p) => (
-                    <TableRow key={p.id}>
-                      <TableCell className="font-medium">{p.name}</TableCell>
-                      <TableCell>{p.expirationDate}</TableCell>
-                      <TableCell>{p.currentStockLevel}</TableCell>
-                      <TableCell>
-                        {isExpired(p.expirationDate) ? (
-                          <Badge variant="destructive">Expired</Badge>
-                        ) : (
-                          <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-                            Expiring Soon
-                          </Badge>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <Dialog>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Delete item</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this item?
+                <br />
+                {`name: ${deleteTarget?.name}`}
+                <br />
+                {`ID: ${deleteTarget?.id}`}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="cursor-pointer">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <DialogClose asChild>
+                <Button
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (!deleteTarget) return;
+                    deleteProduct(deleteTarget.id).then(({ error }) => {
+                      if (error) {
+                        toast.error("Error deleting product: " + error.message);
+                      } else {
+                        toast.success("Product deleted successfully!");
+                        fetchProducts();
+                      }
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <AlertTriangle size={16} className="text-destructive" />
+                Expiry Alerts
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Product</TableHead>
+                    <TableHead>Expiration Date</TableHead>
+                    <TableHead>Stock</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {products
+                    .filter(
+                      (p) =>
+                        isExpired(p.expirationDate) ||
+                        isExpiringSoon(p.expirationDate)
+                    )
+                    .sort(
+                      (a, b) =>
+                        new Date(a.expirationDate).getTime() -
+                        new Date(b.expirationDate).getTime()
+                    )
+                    .map((p) => (
+                      <TableRow key={p.id}>
+                        <TableCell className="font-medium">{p.name}</TableCell>
+                        <TableCell>{p.expirationDate}</TableCell>
+                        <TableCell>{p.currentStockLevel}</TableCell>
+                        <TableCell>
+                          {isExpired(p.expirationDate) ? (
+                            <Badge variant="destructive">Expired</Badge>
+                          ) : (
+                            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
+                              Expiring Soon
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-x-4">
+                            <Pencil
+                              size={16}
+                              role="button"
+                              className="cursor-pointer"
+                              onClick={() => router.push(editProductPath(p.id))}
+                            />
+                            <DialogTrigger asChild>
+                              <Trash
+                                size={16}
+                                role="button"
+                                className="cursor-pointer hover:text-red-600"
+                                onClick={() => setDeleteTarget(p)}
+                              />
+                            </DialogTrigger>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </Dialog>
       )}
     </div>
   );
