@@ -24,7 +24,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { dashboardPath } from "@/path";
+import { productsPath } from "@/path";
 import { insertProducts } from "@/api/apiProduct";
 import { Product } from "@/app/dashboard/types";
 import toast, { Toaster } from "react-hot-toast";
@@ -195,13 +195,13 @@ function Page() {
         toast.error("Error adding product: " + error.message);
       } else {
         toast.success("Product added successfully!");
-        router.push(dashboardPath);
+        router.push(productsPath);
       }
     });
   };
 
   const handleCancel = () => {
-    router.push(dashboardPath);
+    router.push(productsPath);
   };
 
   return (

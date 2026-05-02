@@ -1,6 +1,6 @@
 import { Product } from "@/app/dashboard/types";
 import { supabase } from "./supabase";
-import { ScheduledTask } from "@/app/dashboard/schedule-task/types";
+import { ScheduledTask } from "@/app/schedule-task/types";
 
 export async function getProducts() {
   const { data: products, error } = await supabase.from("products").select("*");

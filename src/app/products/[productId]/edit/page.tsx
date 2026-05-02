@@ -27,7 +27,7 @@ import { use } from "react";
 import { classificationOptions, monthOptions, yearOptions } from "./constants";
 import { categoryOptions } from "@/app/dashboard/constants";
 import { useRouter } from "next/navigation";
-import { dashboardPath } from "@/path";
+import { productsPath } from "@/path";
 import { getProducts, updateProduct } from "@/api/apiProduct";
 import LoadingIndicator from "@/components/Loading";
 import { Toaster } from "react-hot-toast";
@@ -193,7 +193,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
   };
 
   const handleCancel = () => {
-    router.push(dashboardPath);
+    router.push(productsPath);
   };
 
   const handleProductUpdate = async (e: FormEvent) => {
@@ -203,7 +203,7 @@ function EditPage({ params }: { params: Promise<{ productId: string }> }) {
       throw new Error(error.message);
     } else {
       console.log("updated data: ", data);
-      router.push(dashboardPath);
+      router.push(productsPath);
     }
   };
 

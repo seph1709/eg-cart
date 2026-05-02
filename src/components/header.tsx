@@ -8,6 +8,7 @@ import {
   dashboardPath,
   geojsonMakerPath,
   indoorMapPath,
+  productsPath,
   scheduleTaskPath,
 } from "@/path";
 import { supabase } from "@/api/supabase";
@@ -37,6 +38,18 @@ function Header() {
                 variant="ghost"
                 className={`${
                   pathname == dashboardPath ? "text-black" : "text-gray-500"
+                } hover:text-black`}
+              >
+                Dashboard
+              </Button>
+            </Link>
+          </div>
+          <div>
+            <Link href={productsPath}>
+              <Button
+                variant="ghost"
+                className={`${
+                  pathname == productsPath ? "text-black" : "text-gray-500"
                 } hover:text-black`}
               >
                 Products
